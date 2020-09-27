@@ -1,0 +1,17 @@
+AddDefaultCharset utf-8
+Options +SymLinksIfOwnerMatch
+RewriteEngine on
+RewriteBase /
+RewriteRule ^(.*)$ index.php
+
+#Options +SymLinksIfOwnerMatch - без этой опции при вкл RewriteEngine on ошибка
+#RewriteEngine on - Включаем RewriteEngine в php:7.3.3-apache -> Dockerfile: && a2enmod rewrite \
+#RewriteBase / - http://localhost/index.php
+#RewriteRule ^(.*)$ index.php
+# ^(.*)$ - т.е. любоя строка адреса переадрессует на index.php
+# ^ - начало сторки
+# () - группирующие скобки
+# . - любой символ
+# * - ноль и более раз (Данные операторы действуют на тот символ, который стоит перед ними.)
+# $ - конец сторки
+
