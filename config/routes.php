@@ -1,5 +1,5 @@
 <?php
 return [
-    'news' => 'news/index', // actionIndex в NewsController
-    'products' => 'product/list', // actionList в ProductController
+    'news/([0-9]+)' => 'news/view/$1', // NewsController actionView
+    'news' => 'news/index', // NewsController actionIndex
 ];

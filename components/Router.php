@@ -1,6 +1,5 @@
 <?php
 
-
 class Router
 {
     private $routes;
@@ -31,35 +30,30 @@ class Router
     {
     // 1 Получить строку запроса
         $uri = $this->getUri();
-        //echo $uri; // news
-
     // 2 Проверить наличие такого запроса в routes.php
         foreach ($this->routes as $uriPattern => $path) {
-            //echo "<br>$uriPattern -> $path";
-            //news -> news/index
-            //products -> product/list
-
     // 3 Сравниваем $uriPattern и $uri
             if (preg_match("~$uriPattern~", $uri)) {
-
-    // 4 Если есть совпадение, определить какой контроллер и action обрабатывает  запрос
-                $segments = explode('/', $path);
-                // localhost/products/
-                //var_dump($segments); // ['product', 'list']
-                // Формируем имя контроллера и action:
-                // array_shift($segment) = получает (product) - значение первого элемента в массиве и удаляет его из массива
-                $controllerName = ucfirst(array_shift($segments)) . 'Controller'; // ProductController
-                $actionName = 'action' . ucfirst(array_shift($segments)); // actionList
+                // Получаем внутренний путь из внешнего согласно правилу
+                $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
+    // 4 определить контроллер, action, параметры
+                // news/view/sport/123
+                $segments = explode('/', $internalRoute); // ['news', 'view', 'sport', '123']
+                // array_shift($segment) = получает значение первого элемента в массиве и удаляет его из массива
+                $controllerName = ucfirst(array_shift($segments)) . 'Controller'; // NewsController
+                $actionName = 'action' . ucfirst(array_shift($segments)); // actionView
+                $parameters = $segments; // остатки ['sport', '123']
 
     // 5 Подключить файл класс-контроллер
                 $controllerFile = ROOT . '/controllers/' . $controllerName . '.php';
-                // /var/www/html/controllers/ProductController.php
+                // /var/www/html/controllers/NewsController.php
                 if (file_exists($controllerFile)) {
                     include_once ($controllerFile);
                 }
     // 6 Создать объект, вызвать метод (т.е. action)
                 $controllerObject = new $controllerName;
-                $result = $controllerObject->$actionName();
+                $result = call_user_func_array(array($controllerObject, $actionName), $parameters);
+                // actionView($param1='sport', $param2='123')
                 if ($result !== null) {
                     break;
                 }
