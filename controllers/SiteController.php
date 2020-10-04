@@ -1,19 +1,19 @@
 <?php
+
 include_once ROOT . '/models/Category.php';
 include_once ROOT . '/models/Product.php';
 
-class ProductController
+class SiteController
 {
-    public function actionView(int $productId) : bool
+    public function actionIndex() : bool
     {
         $categories = [];
         $categories = Category::getCategoriesList();
 
-        $product = Product::getProductById($productId);
+        $lastProducts = [];
+        $lastProducts = Product::getLatestProduct(6);
 
-        require_once (ROOT . '/views/product/view.php');
-
+        require_once (ROOT . '/views/site/index.php');
         return true;
     }
-
 }

@@ -2,7 +2,7 @@
 
 return [
     'host' => 'mariadb',
-    'dbname' => 'mvc_site',
+    'dbname' => 'e-shopper',
     'user' => 'root',
     'password' => 'Qw12345',
 ];
