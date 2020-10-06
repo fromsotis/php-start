@@ -13,8 +13,9 @@ setlocale(LC_ALL, "russian");
 
 // 2. Подключение файлов системы
 define('ROOT', dirname(__FILE__)); // /var/www/html
-require_once (ROOT . '/components/Router.php'); // /var/www/html/components/Router.php
-require_once (ROOT . '/components/Db.php'); // /var/www/html/components/Db.php
+require_once (ROOT . '/components/Autoload.php'); // /var/www/html/components/Autoload.php
+//require_once (ROOT . '/components/Router.php'); // /var/www/html/components/Router.php
+//require_once (ROOT . '/components/Db.php'); // /var/www/html/components/Db.php
 
 // 3. Установка соединение с БД
 

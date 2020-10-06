@@ -61,3 +61,17 @@ VALUES
 ('17.3" Ноутбук HP OMEN 17-cb1001ur черный', 4, 1652139, 145999, 'HP', '[1920x1080, IPS, Intel Core i7 10750H, 6 х 2.6 ГГц, RAM 16 ГБ, SSD 1024 ГБ, GeForce RTX 2070 Super 8 Гб, Wi-Fi, Windows 10 Home]'),
 ('15.6" Ноутбук Lenovo Legion 7 15IMHg05 серый', 4, 1655145, 229999, 'Lenovo', '[1920x1080, IPS, Intel Core i7 10875H, 8 х 2.3 ГГц, RAM 32 ГБ, SSD 1024 ГБ, GeForce RTX 2080 Super MaxQ 8 Гб, Wi-Fi, Windows 10 Home]'),
 ('15.6" Ноутбук MSI GE66 DragonShield 10SGS-476RU серый', 4, 1687496, 289999, 'MSI', '[1920x1080, IPS, Intel Core i9 10980HK, 8 х 2.4 ГГц, RAM 32 ГБ, SSD 2048 ГБ, GeForce RTX 2080 Super MaxQ 8 Гб, Wi-Fi, Windows 10 Home]');
+
+-- user
+CREATE TABLE `user`
+(
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `email` VARCHAR(255) NOT NULL,
+    `password` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE `unique_email` (`email`)
+) ENGINE = InnoDB;
+
+INSERT INTO `user` (`name`, `email`, `password`)
+VALUES ('Алексей', 'fromsotis@gmail.com', 'Qw12345');

@@ -49,7 +49,7 @@
                             </div>
                         </div>
                     <?php endforeach;?>
-
+                    <?=$pagination->get();?>
                 </div><!--features_items-->
             </div>
         </div>
