@@ -42,4 +42,45 @@ class UserController
 
         return true;
     }
+
+    public function actionLogin()
+    {
+        $email = '';
+        $password = '';
+        if (isset($_POST['submit'])) {
+             $email = $_POST['email'];
+             $password = $_POST['password'];
+
+             $errors = false;
+
+             // Избыточная проверка!!!
+             if (!User::checkEmail($email)) {
+                 $errors[] = 'Неправельные email';
+             }
+             if (!User::checkPassword($password)) {
+                 $errors[] = 'Пароль, не короче 6 символов';
+             }
+             // !!!
+
+             $userId = User::checkUserData($email, $password); // (int)id или false
+
+             if ($userId === false) {
+                 $errors[] = 'Неверные логин или пароль';
+             } else {
+                 // если данные верны то запишем пользователя в сессию
+                 User::auth($userId);
+                 header('Location: /cabinet/');
+                 exit();
+             }
+        }
+        require_once (ROOT . '/views/user/login.php');
+
+        return true;
+    }
+
+    public function actionLogout()
+    {
+        unset($_SESSION['user']);
+        header('Location: /');
+    }
 }

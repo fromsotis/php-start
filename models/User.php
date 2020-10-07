@@ -85,4 +85,99 @@ class User
 
         return false;
     }
+
+    /**
+     * Проверка существования email и password в БД
+     * @param string $email
+     * @param string $password
+     * @return mixed : int (user id) or false
+     */
+    public static function checkUserData(string $email, string $password)
+    {
+        $db = Db::getConnection();
+
+        $query = 'SELECT * FROM user WHERE email = :email AND password = :password';
+
+        $result = $db->prepare($query);
+        $result->bindParam(':email', $email, PDO::PARAM_STR);
+        $result->bindParam(':password', $password, PDO::PARAM_STR);
+        $result->execute();
+
+        $user = $result->fetch();
+        if ($user) {
+            return (int)$user['id'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Пишем id пользователя в сессию
+     * @param int
+     */
+    public static function auth(int $userId) : void
+    {
+        $_SESSION['user'] = $userId;
+    }
+
+    /**
+     * @return mixed :  (int)id пользователя или перенаправит на login.php
+     */
+    public static function checkLogged()
+    {
+        // Если сессия есть, вернем id пользователя
+        if (isset($_SESSION['user'])) {
+            return $_SESSION['user'];
+        }
+
+        header('Location: /user/login');
+    }
+
+    public static function isGuest() : bool
+    {
+        if (isset($_SESSION['user'])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param int $userId
+     * @return array
+     */
+    public static function getUserById(int $userId) : array
+    {
+        if ($userId) {
+            $db = Db::getConnection();
+            $query = 'SELECT * FROM user WHERE id = :userId';
+            $result = $db->prepare($query);
+            $result->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+            $result->setFetchMode(PDO::FETCH_ASSOC);
+            $result->execute();
+
+            return $result->fetch();
+        }
+    }
+
+    /**
+     * Редактирование имени и пароля пользователя
+     * @param int $userId
+     * @param string $name
+     * @param string $password
+     * @return mixed
+     */
+    public static function edit(int $userId, string $name, string $password)
+    {
+        $db = Db::getConnection();
+
+        $query = 'UPDATE user SET name = :name, password = :password WHERE id = :userId';
+        $result = $db->prepare($query);
+        $result->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $result->bindParam(':name', $name, PDO::PARAM_STR);
+        $result->bindParam(':password', $password, PDO::PARAM_STR);
+
+        return $result->execute();
+    }
 }
