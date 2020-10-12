@@ -19,9 +19,10 @@ require_once (ROOT . '/components/Autoload.php'); // /var/www/html/components/Au
 //require_once (ROOT . '/components/Router.php'); // /var/www/html/components/Router.php
 //require_once (ROOT . '/components/Db.php'); // /var/www/html/components/Db.php
 
+//composer swiftmailer вместо mail()
+require_once (ROOT . '/vendor/autoload.php');
 
 // 4. Вызов Router
 $router = new Router();
 $router->run(); // Class Router, method run()
-
 

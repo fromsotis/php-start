@@ -6,6 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Главная</title>
+
     <link href="/template/css/bootstrap.min.css" rel="stylesheet">
     <link href="/template/css/font-awesome.min.css" rel="stylesheet">
     <link href="/template/css/prettyPhoto.css" rel="stylesheet">
@@ -17,6 +18,11 @@
     <script src="/template/js/html5shiv.js"></script>
     <script src="/template/js/respond.min.js"></script>
     <![endif]-->
+
+    <!--Ajax-->
+    <script src="http://code.jquery.com/jquery-1.11.2.js"></script>
+    <!--Ajax-->
+
     <link rel="shortcut icon" href="/template/images/ico/favicon.ico">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/template/images/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/template/images/ico/apple-touch-icon-114-precomposed.png">
@@ -60,7 +66,12 @@
                 <div class="col-sm-8">
                     <div class="shop-menu pull-right">
                         <ul class="nav navbar-nav">
-                            <li><a href="#"><i class="fa fa-shopping-cart"></i> Корзина</a></li>
+                            <li>
+                                <a href="/cart">
+                                    <i class="fa fa-shopping-cart"></i> Корзина
+                                    (<span id="cart-count"><?=Cart::countItems();?></span>)
+                                </a>
+                            </li>
 
                             <?php if (User::isGuest()):?>
                                 <li><a href="/user/login/"><i class="fa fa-lock"></i> Вход</a></li>

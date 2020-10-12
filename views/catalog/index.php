@@ -39,35 +39,19 @@
                                                 <?=$lastProduct['name'];?>
                                             </a>
                                         </p>
-                                        <a href="<?=$lastProduct['id'];?>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>В корзину</a>
+                                        <a href="#" data-id="<?=$lastProduct['id'];?>"
+                                           class="btn btn-default add-to-cart">
+                                            <i class="fa fa-shopping-cart"></i>В корзину
+                                        </a>
                                     </div>
                                     <?php if ($lastProduct['is_new']):?>
                                         <img src="/template/images/home/new.png" class="new" alt="" />
                                     <?php endif;?>
-<!--                                    <div class="product-overlay">-->
-<!--                                        <div class="overlay-content">-->
-<!--                                            <h2>$--><?//=$lastProduct['price'];?><!--</h2>-->
-<!--                                            <p>-->
-<!--                                                <a href="/product/--><?//=$lastProduct['id'];?><!--">-->
-<!--                                                    --><?//=$lastProduct['name'];?>
-<!--                                                </a>-->
-<!--                                            </p>-->
-<!--                                            <a href="--><?//=$lastProduct['id'];?><!--" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>В корзину</a>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
                                 </div>
                             </div>
                         </div>
                     <?php endforeach;?>
 
-<!--                    <ul class="pagination">-->
-<!--                        <li><a href="">&lt;</a></li>-->
-<!--                        <li class="active"><a href="">1</a></li>-->
-<!--                        <li><a href="">2</a></li>-->
-<!--                        <li><a href="">3</a></li>-->
-<!--                        <li><a href="">3</a></li>-->
-<!--                        <li><a href="">&gt;</a></li>-->
-<!--                    </ul>-->
                 </div><!--features_items-->
             </div>
         </div>
