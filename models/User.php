@@ -65,6 +65,17 @@ class User
         return false;
     }
 
+    /**
+     * Проверка поля с телефоном
+     * @param string $phone
+     * @return mixed : 1 | 0 | false
+     */
+    public static function checkPhone(string $phone)
+    {
+        $pattern =  '#^((8|\+7)[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$#';
+        return preg_match($pattern, $phone);
+    }
+
     /** Проверка email на уникальность в БД
      * @param string $email
      * @return bool

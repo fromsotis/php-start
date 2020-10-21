@@ -8,7 +8,7 @@ class Pagination
      * @var Ссылок навигации на страницу
      *
      */
-    private $max = 10;
+    private $max = 6;
 
     /**
      *

@@ -5,10 +5,10 @@ USE `e-shopper`;
 -- category
 CREATE TABLE IF NOT EXISTS `category`
 (
-    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(50) NOT NULL,
-    `sort_order` INT(1) NOT NULL DEFAULT '0',
-    `status` INT(1) NOT NULL DEFAULT '1'
+    `id`         INT(11)     NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name`       VARCHAR(50) NOT NULL,
+    `sort_order` INT(1)      NOT NULL DEFAULT '0',
+    `status`     INT(1)      NOT NULL DEFAULT '1'
 );
 
 INSERT INTO `category` (`name`, `sort_order`, `status`) VALUES
@@ -20,18 +20,18 @@ INSERT INTO `category` (`name`, `sort_order`, `status`) VALUES
 -- product
 CREATE TABLE IF NOT EXISTS `product`
 (
-    `id` INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(255) NOT NULL,
-    `category_id` INT(11) NOT NULL,
-    `code` INT(11) NOT NULL,
-    `price` FLOAT NOT NULL,
-    `availability` INT(11) NOT NULL DEFAULT '1', -- ???
-    `brand` VARCHAR(50) NOT NULL,
-    `image` VARCHAR(50) NULL DEFAULT NULL, -- Картника товара по умолчанию NULL
-    `description` TEXT NOT NULL,
-    `is_new` INT(1) NOT NULL DEFAULT '0',
-    `is_recommended` INT(1) NOT NULL DEFAULT '0',
-    `status` INT(1) NOT NULL DEFAULT '1'
+    `id`             INT(11)      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name`           VARCHAR(255) NOT NULL,
+    `category_id`    INT(11)      NOT NULL,
+    `code`           INT(11)      NOT NULL,
+    `price`          FLOAT        NOT NULL,
+    `availability`   INT(11)      NOT NULL DEFAULT '1',  -- ???
+    `brand`          VARCHAR(50)  NOT NULL,
+    `image`          VARCHAR(50)  NULL     DEFAULT NULL, -- Картника товара по умолчанию NULL
+    `description`    TEXT         NOT NULL,
+    `is_new`         INT(1)       NOT NULL DEFAULT '0',
+    `is_recommended` INT(1)       NOT NULL DEFAULT '0',
+    `status`         INT(1)       NOT NULL DEFAULT '1'
 );
 
 -- product(category_id) -> category(id)
@@ -63,15 +63,35 @@ VALUES
 ('15.6" Ноутбук MSI GE66 DragonShield 10SGS-476RU серый', 4, 1687496, 289999, 'MSI', '[1920x1080, IPS, Intel Core i9 10980HK, 8 х 2.4 ГГц, RAM 32 ГБ, SSD 2048 ГБ, GeForce RTX 2080 Super MaxQ 8 Гб, Wi-Fi, Windows 10 Home]');
 
 -- user
-CREATE TABLE `user`
+CREATE TABLE IF NOT EXISTS `user`
 (
-    `id` INT(11) NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
-    `email` VARCHAR(255) NOT NULL,
+    `id`       INT(11)      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name`     VARCHAR(255) NOT NULL,
+    `email`    VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    PRIMARY KEY (`id`),
     UNIQUE `unique_email` (`email`)
-) ENGINE = InnoDB;
+);
 
 INSERT INTO `user` (`name`, `email`, `password`)
 VALUES ('Алексей', 'fromsotis@gmail.com', 'Qw12345');
+
+-- product_order
+CREATE TABLE IF NOT EXISTS `product_order`
+(
+    `id`           INT(11)      NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `user_name`    VARCHAR(255) NOT NULL,
+    `user_phone`   VARCHAR(255) NOT NULL,
+    `user_comment` TEXT         NOT NULL,
+    `user_id`      INT(11)      NULL     DEFAULT NULL,
+    `date`         TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `products`     TEXT         NOT NULL,
+    `status`       INT(1)       NOT NULL DEFAULT '1'
+);
+
+-- product_order(user_id) -> user(id)
+# ALTER TABLE `product_order`
+#     ADD CONSTRAINT fk_product_order_user
+#         FOREIGN KEY (`user_id`)
+#             REFERENCES `user` (`id`)
+#             ON DELETE NO ACTION
+#             ON UPDATE NO ACTION;

@@ -29,6 +29,28 @@ class Product
         return $productList;
     }
 
+    public static function getRecommendedProducts() : array
+    {
+        $db = Db::getConnection();
+
+        $productList = [];
+
+        $query = "SELECT id, `name`, price, is_new
+                    FROM product WHERE status = 1 AND is_recommended = 1 ORDER BY id";
+        $result = $db->query($query);
+
+        $i = 0;
+        while ($row = $result->fetch()) {
+            $productList[$i]['id'] = $row['id'];
+            $productList[$i]['name'] = $row['name'];
+            $productList[$i]['price'] = $row['price'];
+            $productList[$i]['is_new'] = $row['is_new'];
+            $i++;
+        }
+
+        return $productList;
+    }
+
     public static function getProductListByCategory($categoryId = false, $page = 1) : array
     {
         if ($categoryId) {

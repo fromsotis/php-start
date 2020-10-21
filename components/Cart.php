@@ -82,4 +82,25 @@ class Cart
 
         return $total;
     }
+
+    /**
+     * Обнуляет корзину
+     */
+    public static function clear() : void
+    {
+        if (isset($_SESSION['products'])) {
+            unset($_SESSION['products']);
+        }
+    }
+
+    /**
+     * Удаляет товар из корзины по его id
+     * @param int $productId
+     */
+    public static function deleteProduct(int $productId) : void
+    {
+        $productsInCart = self::getProducts();
+        unset($productsInCart[$productId]);
+        $_SESSION['products'] = $productsInCart;
+    }
 }

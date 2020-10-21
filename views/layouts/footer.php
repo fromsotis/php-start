@@ -1,4 +1,4 @@
-<footer id="footer"><!--Footer-->
+<footer id="footer" class="page-footer"><!--Footer-->
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
@@ -12,12 +12,15 @@
 
 
 <script src="/template/js/jquery.js"></script>
+<!-- slider -->
+<script src="/template/js/jquery.cycle2.min.js"></script>
+<script src="/template/js/jquery.cycle2.carousel.min.js"></script>
 <script src="/template/js/bootstrap.min.js"></script>
 <script src="/template/js/jquery.scrollUp.min.js"></script>
 <script src="/template/js/price-range.js"></script>
 <script src="/template/js/jquery.prettyPhoto.js"></script>
 <script src="/template/js/main.js"></script>
-
+<!-- Асинхронное добавление в корзину -->
 <script>
     $(document).ready(function () {
         $(".add-to-cart").click(function () {
@@ -29,7 +32,8 @@
         });
     });
 </script>
-
+</body>
+</html>
 <!--<script>-->
 <!--// $(document).ready - говорит о том что код ниже надо выполнить-->
 <!--// только после загрузки документа-->
@@ -50,5 +54,4 @@
 <!--       });-->
 <!--    });-->
 <!--</script>-->
-</body>
-</html>
+

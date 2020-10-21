@@ -11,9 +11,12 @@ class SiteController
         $categories = Category::getCategoriesList();
 
         $lastProducts = [];
-        $lastProducts = Product::getLatestProduct(12);
+        $lastProducts = Product::getLatestProduct(6); // кол-во отоброжаемых товаров на главной
 
-        require_once (ROOT . '/views/site/index.php');
+        $sliderProducts = [];
+        $sliderProducts = Product::getRecommendedProducts(); // кол-во отоброжаемых товаров в слайдаре
+
+        require_once(ROOT . '/views/site/index.php');
         return true;
     }
 

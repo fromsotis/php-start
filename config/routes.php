@@ -14,6 +14,12 @@ return [
     'cart/add/([0-9]+)' => 'cart/add/$1', // actionAdd в CartController
     // Корзина (Ajax)
     'cart/addAjax/([0-9]+)' => 'cart/addAjax/$1', // actionAddAjax в CartController
+
+    // Оформление заказа товара из корзины
+    'cart/checkout' => 'cart/checkout', // actionCheckout в CartController
+    // Удалить товар в корзине по id товара
+    'cart/delete/([0-9]+)' => 'cart/delete/$1', // actionDelete в CartController
+
     // Просмотр товаров в корзине
     'cart' => 'cart/index', // actionIndex в CartController
 
