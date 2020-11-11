@@ -12,7 +12,9 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a href="/category/<?=$categoryItem['id'];?>"><?=$categoryItem['name'];?></a>
+                                        <a href="/category/<?php echo $categoryItem['id'];?>">
+                                            <?php echo $categoryItem['name'];?>
+                                        </a>
                                     </h4>
                                 </div>
                             </div>
@@ -27,24 +29,24 @@
                 <div class="features_items"><!--features_items-->
                     <h2 class="title text-center">Последние товары</h2>
 
-                    <?php foreach($lastProducts as $lastProduct):?>
+                    <?php foreach($latestProducts as $latestProduct):?>
                         <div class="col-sm-4">
                             <div class="product-image-wrapper">
                                 <div class="single-products">
                                     <div class="productinfo text-center">
-                                        <img src="/template/images/home/product4.jpg" alt="" />
-                                        <h2>$<?=$lastProduct['price'];?></h2>
+                                        <img src="<?php echo Product::getImage($latestProduct['id'])?>" alt="" />
+                                        <h2>$<?php echo $latestProduct['price'];?></h2>
                                         <p>
-                                            <a href="/product/<?=$lastProduct['id'];?>">
-                                                <?=$lastProduct['name'];?>
+                                            <a href="/product/<?php echo $latestProduct['id'];?>">
+                                                <?php echo $latestProduct['name'];?>
                                             </a>
                                         </p>
-                                        <a href="#" data-id="<?=$lastProduct['id'];?>"
+                                        <a href="#" data-id="<?php echo $latestProduct['id'];?>"
                                            class="btn btn-default add-to-cart">
                                             <i class="fa fa-shopping-cart"></i>В корзину
                                         </a>
                                     </div>
-                                    <?php if ($lastProduct['is_new']):?>
+                                    <?php if ($latestProduct['is_new']):?>
                                         <img src="/template/images/home/new.png" class="new" alt="" />
                                     <?php endif;?>
                                 </div>
@@ -53,6 +55,9 @@
                     <?php endforeach;?>
 
                 </div><!--features_items-->
+
+                <?php echo $pagination->get(); ?>
+
             </div>
         </div>
     </div>

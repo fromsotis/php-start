@@ -4,22 +4,24 @@
 class User
 {
     /**
-     * Запись пользователя в БД
+     * Запись пользователя в БД, в таблицу user
      * @param string $name
      * @param string $email
      * @param string $password
-     * @return bool
+     * @return bool : true - пользователь добавлен || false - ошибка добавления пользователя
      */
     public static function register(string $name, string $email, string $password) : bool
     {
-        $db = Db::getConnection();
+        $name = trim(strip_tags($name));
+        $email = trim(strip_tags($email));
+        $hash = password_hash(trim($password), PASSWORD_DEFAULT);
 
-        $query = "INSERT INTO user (name, email, password) VALUES (:name, :email, :password)";
-
-        $result = $db->prepare($query);
+        $dbh = Db::getConnection();
+        $sql = 'INSERT INTO user (name, email, password) VALUES (:name, :email, :hash)';
+        $result = $dbh->prepare($sql);
         $result->bindParam(':name', $name, PDO::PARAM_STR);
         $result->bindParam(':email', $email, PDO::PARAM_STR);
-        $result->bindParam(':password', $password, PDO::PARAM_STR);
+        $result->bindParam(':hash', $hash, PDO::PARAM_STR);
 
         return $result->execute();
     }
@@ -38,11 +40,23 @@ class User
         return false;
     }
 
-    /** Проверка поля с паролем длиной не меньше 6 символов
+    /**
+     * Проверка поля с телефоном
+     * @param string $phone
+     * @return mixed : 1 | 0 | false
+     */
+    public static function checkPhone(string $phone)
+    {
+        $pattern =  '#^((8|\+7)[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$#';
+        return preg_match($pattern, $phone);
+    }
+
+    /**
+     * Проверка поля с паролем длиной не меньше 6 символов
      * @param string $password
      * @return bool
      */
-    public static function checkPassword(string $password) : bool
+    public static function checkPasswordLen(string $password) : bool
     {
         if (strlen($password) >= 6) {
             return true;
@@ -66,27 +80,15 @@ class User
     }
 
     /**
-     * Проверка поля с телефоном
-     * @param string $phone
-     * @return mixed : 1 | 0 | false
-     */
-    public static function checkPhone(string $phone)
-    {
-        $pattern =  '#^((8|\+7)[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$#';
-        return preg_match($pattern, $phone);
-    }
-
-    /** Проверка email на уникальность в БД
+     * Проверка email на уникальность в БД, в таблице user
      * @param string $email
-     * @return bool
+     * @return bool : true - существует, false - не существует
      */
     public static function checkEmailExists(string $email) : bool
     {
-        $db = Db::getConnection();
-
-        $query = "SELECT COUNT(*) FROM user WHERE email = :email";
-
-        $result = $db->prepare($query);
+        $dbh = Db::getConnection();
+        $sql = 'SELECT COUNT(*) FROM user WHERE email = :email';
+        $result = $dbh->prepare($sql);
         $result->bindParam(':email', $email, PDO::PARAM_STR);
         $result->execute();
 
@@ -98,32 +100,33 @@ class User
     }
 
     /**
-     * Проверка существования email и password в БД
+     * Проверка существования email и password в БД, в таблице user
      * @param string $email
      * @param string $password
-     * @return mixed : int (user id) or false
+     * @return mixed : вернет (int)id пользователя из табл. user || false
      */
     public static function checkUserData(string $email, string $password)
     {
-        $db = Db::getConnection();
-
-        $query = 'SELECT * FROM user WHERE email = :email AND password = :password';
-
-        $result = $db->prepare($query);
+        $dbh = Db::getConnection();
+        $sql = 'SELECT id, password FROM user WHERE email = :email';
+        $result = $dbh->prepare($sql);
         $result->bindParam(':email', $email, PDO::PARAM_STR);
-        $result->bindParam(':password', $password, PDO::PARAM_STR);
         $result->execute();
 
-        $user = $result->fetch();
+        $user = $result->fetch(PDO::FETCH_ASSOC);
+        // в $user = false (email не найден) || true (email найден)
         if ($user) {
-            return (int)$user['id'];
+            // Если hash от $password == hash в $user['password'] вернем id пользователя
+            if (password_verify($password, $user['password'])) {
+                return (int)$user['id'];
+            }
         }
 
         return false;
     }
 
     /**
-     * Пишем id пользователя в сессию
+     * Запишет id пользователя в сессию
      * @param int
      */
     public static function auth(int $userId) : void
@@ -132,7 +135,8 @@ class User
     }
 
     /**
-     * @return mixed :  (int)id пользователя или перенаправит на login.php
+     * Проверит авторизирован ли пользователь
+     * @return mixed :  (int)id - пользователя || void - перенаправит на login.php
      */
     public static function checkLogged()
     {
@@ -142,8 +146,13 @@ class User
         }
 
         header('Location: /user/login');
+        exit();
     }
 
+    /**
+     * Метод проверяет, является ли пользователь гостем
+     * @return bool
+     */
     public static function isGuest() : bool
     {
         if (isset($_SESSION['user'])) {
@@ -154,41 +163,22 @@ class User
     }
 
     /**
+     * Вернет массив данных пользователя по его id
      * @param int $userId
-     * @return array
+     * @return mixed array || false
      */
-    public static function getUserById(int $userId) : array
+    public static function getUserById(int $userId)
     {
         if ($userId) {
-            $db = Db::getConnection();
-            $query = 'SELECT * FROM user WHERE id = :userId';
-            $result = $db->prepare($query);
+            $dbh = Db::getConnection();
+            $sql = 'SELECT * FROM user WHERE id = :userId';
+            $result = $dbh->prepare($sql);
             $result->bindParam(':userId', $userId, PDO::PARAM_INT);
-
-            $result->setFetchMode(PDO::FETCH_ASSOC);
             $result->execute();
 
-            return $result->fetch();
+            return $result->fetch(PDO::FETCH_ASSOC);
         }
-    }
 
-    /**
-     * Редактирование имени и пароля пользователя
-     * @param int $userId
-     * @param string $name
-     * @param string $password
-     * @return mixed
-     */
-    public static function edit(int $userId, string $name, string $password)
-    {
-        $db = Db::getConnection();
-
-        $query = 'UPDATE user SET name = :name, password = :password WHERE id = :userId';
-        $result = $db->prepare($query);
-        $result->bindParam(':userId', $userId, PDO::PARAM_INT);
-        $result->bindParam(':name', $name, PDO::PARAM_STR);
-        $result->bindParam(':password', $password, PDO::PARAM_STR);
-
-        return $result->execute();
+        return false;
     }
 }

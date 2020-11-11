@@ -1,12 +1,13 @@
 <?php
 return [
-
     // маршрут для обработки /product/id-товара
-    'product/([0-9]+)' => 'product/view/$1', // actionView в ProductController
+    'product/([0-9]+)' => 'product/view/$1', // actionView($1) в ProductController
 
+    // Пагинация в каталоге ($1 - номер старници)
+    'catalog/page-([0-9]+)' => 'catalog/index/$1', // actionIndex($1) в CatalogController
     'catalog' => 'catalog/index', // actionIndex в CatalogController
 
-    // Пагинация
+    // Пагинация в выбраной категории ($1-id категории, $2-номер страници)
     'category/([0-9]+)/page-([0-9]+)' => 'catalog/category/$1/$2', // actionCategory в CatalogController
     'category/([0-9]+)' => 'catalog/category/$1', // actionCategory в CatalogController
 
@@ -29,8 +30,25 @@ return [
     'user/logout' => 'user/logout', // actionLogout в UserController
 
     // Личный кабинет
-    'cabinet/edit' => 'cabinet/edit', // actionEdit в CabinetController
     'cabinet' => 'cabinet/index', // actionIndex в CabinetController
+
+    // Управление товарами:
+    'admin/product/create' => 'adminProduct/create',    // actionIndex AdminProductController
+    'admin/product/update/([0-9]+)' => 'adminProduct/update/$1', // actionUpdate($1) AdminProductController
+    'admin/product/delete/([0-9]+)' => 'adminProduct/delete/$1', // actionDelete($1) AdminProductController
+    'admin/product' => 'adminProduct/index',
+    // Управление категориями:
+    'admin/category/create' => 'adminCategory/create',
+    'admin/category/update/([0-9]+)' => 'adminCategory/update/$1',
+    'admin/category/delete/([0-9]+)' => 'adminCategory/delete/$1',
+    'admin/category' => 'adminCategory/index', // actionIndex AdminCategoryController
+    // Управление заказами:
+    'admin/order/update/([0-9]+)' => 'adminOrder/update/$1',
+    'admin/order/delete/([0-9]+)' => 'adminOrder/delete/$1',
+    'admin/order/view/([0-9]+)' => 'adminOrder/view/$1',
+    'admin/order' => 'adminOrder/index',
+    // Админпанель:
+    'admin' => 'admin/index', // actionIndex AdminController
 
     // Обратная связь
     'contacts' => 'site/contact', // actionContact в siteController

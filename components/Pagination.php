@@ -1,6 +1,9 @@
 <?php
 
-
+/**
+ * Class Pagination
+ * Сторонний класс
+ */
 class Pagination
 {
     /**

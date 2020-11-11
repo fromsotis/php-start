@@ -1,20 +1,26 @@
 <?php
 
-
 class Db
 {
     /**
      * Получаем из db_params.php данные для подкл. к БД в виде массива
-     * Возвращаем подкл. к БД
-     * @return object
+     * @return object : Возвращаем объект подключения к БД $dbh
      */
     public static function getConnection() : object
     {
         $paramPath = ROOT . '/config/db_params.php';
-        $params = include ($paramPath);
+
+        $params = require($paramPath);
+        // Если указать require_once($paramPath), то ошибка:
+        // Fatal error: Uncaught PDOException: SQLSTATE[HY000] [2002] No such file or directory in /var/www/html/components/Db.php on line 18
+
         $dsn = "mysql:host={$params['host']};dbname={$params['dbname']}";
-        $db = new PDO($dsn, $params['user'], $params['password']);
-        $db->exec("set names utf8");
-        return $db;
+        $user = $params['user'];
+        $password = $params['password'];
+        $dbh = new PDO($dsn, $user, $password);
+
+        $dbh->exec("set names utf8");
+
+        return $dbh;
     }
 }

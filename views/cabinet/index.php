@@ -5,10 +5,11 @@
         <div class="row">
 
             <h1>Кабинет пользователя</h1>
-            <h3>Привет, <?=$user['name'];?></h3>
+            <h3>Привет, <?php echo $user['name']; ?></h3>
             <ul>
-                <li><a href="/cabinet/edit">Редактировать данные</a></li>
-                <li><a href="/cabinet/history">Список покупок</a></li>
+                <?php if ($user['role'] === 'admin'): ?>
+                <li><a href="/admin/index">Администрирование сайта</a></li>
+                <?php endif; ?>
             </ul>
 
         </div>

@@ -11,8 +11,8 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a href="/category/<?=$categoryItem['id'];?>">
-                                            <?=$categoryItem['name'];?>
+                                        <a href="/category/<?php echo $categoryItem['id']; ?>">
+                                            <?php echo $categoryItem['name']; ?>
                                         </a>
                                     </h4>
                                 </div>
@@ -38,24 +38,24 @@
                             </tr>
                             <?php foreach ($products as $product): ?>
                                 <tr>
-                                    <td><?=$product['code'];?></td>
+                                    <td><?php echo $product['code']; ?></td>
                                     <td>
-                                        <a href="/product/<?=$product['id'];?>">
-                                            <?=$product['name'];?>
+                                        <a href="/product/<?php echo $product['id']; ?>">
+                                            <?php echo $product['name']; ?>
                                         </a>
                                     </td>
-                                    <td><?=$product['price'];?></td>
-                                    <td><?=$productsInCart[$product['id']];?></td>
+                                    <td><?php echo $product['price']; ?></td>
+                                    <td><?php echo $productsInCart[$product['id']]; ?></td>
                                     <td>
-                                        <a class="btn btn-default checkout" href="/cart/delete/<?=$product['id'];?>">
+                                        <a class="btn btn-default checkout" href="/cart/delete/<?php echo $product['id']; ?>">
                                             <i class="fa fa-times"></i>
                                         </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
                             <tr>
-                                <td colspan="4">Общая стоимость, &#8381;</td>
-                                <td><?=$totalPrice;?></td>
+                                <td colspan="4">Общая стоимость, $</td>
+                                <td><?php echo $totalPrice; ?></td>
                             </tr>
 
                         </table>

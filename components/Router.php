@@ -8,8 +8,8 @@ class Router
     {
     // Запишем в $routes массив из файла routes.php
         $routesPath = ROOT . '/config/routes.php'; // /var/www/html/config/routes.php
-        $this->routes = include ($routesPath);
-    // $routes = ['news'=>'news/index', 'products'=>'product/list']
+        $this->routes = require_once ($routesPath);
+    // $routes = ['catalog'=>'catalog/index', 'products'=>'product/view']
     }
 
     /**
@@ -24,36 +24,62 @@ class Router
     }
 
     /**
-     * Анализирует запрос и принемает управление от front controller
+     * Анализирует запрос, сравнивает строку запроса с маршрутами,
+     * определяет контроллер его action и параметры,
+     * вызывает метод
+     * @return void
      */
-    public function run()
+    public function run() : void
     {
-    // 1 Получить строку запроса
-        $uri = $this->getUri();
-    // 2 Проверить наличие такого запроса в routes.php
-        foreach ($this->routes as $uriPattern => $path) {
-    // 3 Сравниваем $uriPattern и $uri
-            if (preg_match("~$uriPattern~", $uri)) {
-                // Получаем внутренний путь из внешнего согласно правилу
-                $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
-    // 4 определить контроллер, action, параметры
-                // news/view/sport/123
-                $segments = explode('/', $internalRoute); // ['news', 'view', 'sport', '123']
-                // array_shift($segment) = получает значение первого элемента в массиве и удаляет его из массива
-                $controllerName = ucfirst(array_shift($segments)) . 'Controller'; // NewsController
-                $actionName = 'action' . ucfirst(array_shift($segments)); // actionView
-                $parameters = $segments; // остатки ['sport', '123']
+    // 1 Получим строку запроса
+        $uri = $this->getUri(); // product/23
 
-    // 5 Подключить файл класс-контроллер
+    // 2 Проверим наличие такого запроса в routes.php
+        foreach ($this->routes as $uriPattern => $path) {
+            // $uriPattern      => $path
+            // product/([0-9]+) => product/view/$1
+
+    // 3 Сравним присутсвует ли $uriPattern в $uri
+            if (preg_match("~$uriPattern~", $uri)) {
+
+                // Получаем внутренний путь из внешнего согласно правилу
+                // $uri = product/23
+                // $uriPattern = product/([0-9]+)
+                // $path = product/view/$1
+                $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
+                // $internalRout = 'product/view/23'
+
+    // 4 Определим: контроллер, action, параметры
+                // разбиваем 'product/view/23' на ['product', 'view', '23']
+                $segments = explode('/', $internalRoute);
+
+                // Имя контроллера
+                // array_shift($segment) = получает значение первого элемента в массиве и удаляет его из массива
+                $controllerName = ucfirst(array_shift($segments)) . 'Controller'; // ProductController
+
+                // Имя метода(action)
+                $actionName = 'action' . ucfirst(array_shift($segments)); // actionView
+
+                // Параметры остатки от $segments ['23']
+                $params = $segments;
+
+    // 5 Подключим файл класс-контроллер
                 $controllerFile = ROOT . '/controllers/' . $controllerName . '.php';
-                // /var/www/html/controllers/NewsController.php
+                // /var/www/html/controllers/ProductController.php
                 if (file_exists($controllerFile)) {
-                    include_once ($controllerFile);
+                    require_once ($controllerFile);
                 }
-    // 6 Создать объект, вызвать метод (т.е. action)
+    // 6 Создаем объект, вызвываем action
                 $controllerObject = new $controllerName;
-                $result = call_user_func_array(array($controllerObject, $actionName), $parameters);
-                // actionView($param1='sport', $param2='123')
+
+                // call_user_func_array вызовит метод $actionName с параметрами $params у объекта $controllerObject
+                // $params будут переданны в action как переменные, например
+                // actionView($id); $id = 23
+                $result = call_user_func_array(array($controllerObject, $actionName), $params);
+                // $result = (new ProductController) -> actionView(23)
+
+                // Если метод вернет true, то обрываем цикл foreach ($this->routes as $uriPattern => $path),
+                // котроый ищет совпадения между маршрутом и строкой запроса
                 if ($result !== null) {
                     break;
                 }

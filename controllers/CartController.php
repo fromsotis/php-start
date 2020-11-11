@@ -4,7 +4,12 @@
 class CartController
 {
     // /cart/add/2
-    public function actionAdd(int $productId)
+    /**
+     * Action добавляет товар в корзину
+     * и перенаправляет пользователя на страницу с которой он пришел
+     * @param int $productId
+     */
+    public function actionAdd(int $productId) : void
     {
         // Добавляем товар в корзину (в сессию)
         Cart::addProduct($productId);
@@ -14,16 +19,26 @@ class CartController
         // $_SERVER['HTTP_REFERRER'] = http://localhost/catalog/
         $referer = $_SERVER['HTTP_REFERER'];
         header("Location: $referer");
+        exit();
     }
 
-    public function actionAddAjax($productId)
+    /**
+     * Action добавляет товары в карзину при помощи AJAX
+     * @param $productId
+     * @return bool
+     */
+    public function actionAddAjax($productId) : bool
     {
         // Добавляем товар в корзину
         echo Cart::addProduct($productId);
         return true;
     }
 
-    public function actionIndex()
+    /**
+     * Action главной страници корзины
+     * @return bool
+     */
+    public function actionIndex() : bool
     {
         $categories = [];
         $categories = Category::getCategoriesList();
@@ -35,6 +50,7 @@ class CartController
         if ($productsInCart) {
             // Получаем полную информацию о товарах для списка
             $productsIds = array_keys($productsInCart);
+
             $products = Product::getProductsByIds($productsIds);
 
             $totalPrice = Cart::getTotalPrice($products);
@@ -44,10 +60,13 @@ class CartController
         return true;
     }
 
+    /**
+     * Action оформления заказа в корзине товаров
+     * @return bool
+     */
     public function actionCheckout()
     {
         // Список категорий для левого меню
-        $categories = [];
         $categories = Category::getCategoriesList();
 
         // Статус успешного выполнения заказа
@@ -88,26 +107,9 @@ class CartController
 
                 if ($result) {
                     // Оповещаем администратора о новом заказе
-                    $adminMail = 'womxez09hez2@mail.ru';
                     $message = 'http://localhost/admin/orders';
                     $subject = 'Новый заказ';
-
-                    $transport = (new Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
-                        ->setUsername('fromyeticave@gmail.com')
-                        ->setPassword('!@Qw123456789');
-
-                    $mailer = new Swift_Mailer($transport);
-
-                    $message = (new Swift_Message($subject))
-                        ->setFrom(['fromyeticave@gmail.com' => 'E-Shopper'])
-                        ->setTo([$adminMail])
-                        ->setBody($message, 'text/html');
-                    // Debug send mail
-//                    $logger = new Swift_Plugins_Loggers_EchoLogger();
-//                    $mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
-//
-//                    $result = $mailer->send($message, $failures);
-//                    var_dump($failures);
+                    Email::sendMail($subject, $message);
 
                     // Очищаем корзину
                     Cart::clear();
@@ -147,10 +149,7 @@ class CartController
                 $userComment = false;
 
                 // Пользователь авторизован?
-                if (User::isGuest()) {
-                    // Нет
-                    // Для формы пустые
-                } else {
+                if (!User::isGuest()) {
                     // Да, авторизован
                     // Получаем информацию о пользователе из БД по id
                     $userId = User::checkLogged();
@@ -160,7 +159,6 @@ class CartController
                 }
             }
         }
-
 
         require_once (ROOT . '/views/cart/checkout.php');
 

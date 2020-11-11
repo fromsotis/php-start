@@ -3,17 +3,22 @@
 
 class UserController
 {
-    public function actionRegister()
+    /** Action для регистрации нового пользователя
+     * @return bool
+     */
+    public function actionRegister() : bool
     {
         $name = '';
         $email = '';
         $password = '';
+        $repeatPassword = '';
         $result = false;
 
         if (isset($_POST['submit'])) {
             $name = $_POST['name'];
             $email = $_POST['email'];
             $password = $_POST['password'];
+            $repeatPassword = $_POST['repeat_password'];
 
             $errors = false;
 
@@ -25,8 +30,12 @@ class UserController
                 $errors[] = 'Не правелный email';
             }
 
-            if (!User::checkPassword($password)) {
+            if (!User::checkPasswordLen($password)) {
                 $errors[] = 'Пароль не должен быть короче 6-ти символов';
+            }
+
+            if ($password !== $repeatPassword) {
+                $errors[] = 'Пароли не совпадают';
             }
 
             if (User::checkEmailExists($email)) {
@@ -43,6 +52,10 @@ class UserController
         return true;
     }
 
+    /**
+     * Action для авторизации пользователя на сайте
+     * @return mixed true || void
+     */
     public function actionLogin()
     {
         $email = '';
@@ -53,18 +66,16 @@ class UserController
 
              $errors = false;
 
-             // Избыточная проверка!!!
              if (!User::checkEmail($email)) {
                  $errors[] = 'Неправельные email';
              }
-             if (!User::checkPassword($password)) {
+             if (!User::checkPasswordLen($password)) {
                  $errors[] = 'Пароль, не короче 6 символов';
              }
-             // !!!
 
-             $userId = User::checkUserData($email, $password); // (int)id или false
+             $userId = User::checkUserData($email, $password); // (int)id пользователя || false
 
-             if ($userId === false) {
+             if (!$userId) {
                  $errors[] = 'Неверные логин или пароль';
              } else {
                  // если данные верны то запишем пользователя в сессию
@@ -78,9 +89,14 @@ class UserController
         return true;
     }
 
-    public function actionLogout()
+    /**
+     * Action для выхода из личного кабинете
+     * удалит сессию текущего пользователя
+     */
+    public function actionLogout() : void
     {
         unset($_SESSION['user']);
         header('Location: /');
+        exit();
     }
 }

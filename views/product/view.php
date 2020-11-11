@@ -12,7 +12,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <a href="/category/<?=$categoryItem['id'];?>"><?=$categoryItem['name'];?></a>
+                                        <a href="/category/<?php echo$categoryItem['id'];?>"><?php echo$categoryItem['name'];?></a>
                                     </h4>
                                 </div>
                             </div>
@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-sm-5">
                             <div class="view-product">
-                                <img src="/template/images/tech/apple_mono.jpg" alt="" />
+                                <img src="<?php echo Product::getImage($product['id']); ?>" alt="" />
                             </div>
                         </div>
                         <div class="col-sm-7">
@@ -36,27 +36,25 @@
                                 <?php if ($product['is_new']):?>
                                     <img src="/template/images/product-details/new.jpg" class="newarrival" alt="" />
                                 <?php endif;?>
-                                <h2><?=$product['name'];?></h2>
-                                <p>Код товара: <?=$product['code'];?></p>
+                                <h2><?php echo$product['name'];?></h2>
+                                <p>Код товара: <?php echo$product['code'];?></p>
                                 <span>
-                                            <span>RUB <?=$product['price']?>&#8381;</span>
+                                            <span>RUB <?php echo$product['price']?>$</span>
                                             <label>Количество:</label>
-                                            <input type="text" value="3" />
-                                            <button type="button" class="btn btn-fefault cart">
-                                                <i class="fa fa-shopping-cart"></i>
-                                                В корзину
-                                            </button>
+                                            <input type="text" value="1" />
+<!--                                            <button type="button" class="btn btn-fefault cart" data-id="--><?//=$product['id'];?><!--"><i class="fa fa-shopping-cart"></i>В корзину</button>-->
+                                            <a href="#" class="btn btn-default add-to-cart" data-id="<?php echo$product['id'];?>"><i class="fa fa-shopping-cart"></i>В корзину</a>
                                         </span>
                                 <p><b>Наличие:</b> На складе</p>
                                 <p><b>Состояние:</b> Новое</p>
-                                <p><b>Производитель:</b> <?=$product['brand'];?></p>
+                                <p><b>Производитель:</b> <?php echo$product['brand'];?></p>
                             </div><!--/product-information-->
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
                             <h5>Описание товара</h5>
-                            <p><?=$product['description'];?></p>
+                            <p><?php echo$product['description'];?></p>
                         </div>
                     </div>
                 </div><!--/product-details-->
@@ -65,7 +63,6 @@
         </div>
     </div>
 </section>
-
 
 <br/>
 <br/>

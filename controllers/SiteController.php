@@ -1,39 +1,29 @@
 <?php
 
-include_once ROOT . '/models/Category.php';
-include_once ROOT . '/models/Product.php';
 
 class SiteController
 {
+    /**
+     * Action для главной страници сайта
+     * @return bool
+     */
     public function actionIndex() : bool
     {
-        $categories = [];
         $categories = Category::getCategoriesList();
-
-        $lastProducts = [];
-        $lastProducts = Product::getLatestProduct(6); // кол-во отоброжаемых товаров на главной
-
-        $sliderProducts = [];
-        $sliderProducts = Product::getRecommendedProducts(); // кол-во отоброжаемых товаров в слайдаре
+        $latestProducts = Product::getLatestProduct(); // товаров на главной в кол-ве Product::SHOW_BY_DEFAULT
+        $sliderProducts = Product::getRecommendedProducts(); // товары в слайдаре
 
         require_once(ROOT . '/views/site/index.php');
+
         return true;
     }
 
-     // mail() - устарело и удалено с php7.4
-//    public function actionContact()
-//    {
-//        $mail = 'womxez09hez2@mail.ru';
-//        $subject = 'Тема письма';
-//        $message = 'Содержание письма';
-//        $result = mail($mail, $subject, $message);
-//
-//        var_dump($result);
-//
-//        die();
-//    }
-
-    public function actionContact()
+    /**
+     * Action для обратной связи
+     * отправляет сообщение пользователя сайта администратору
+     * @return bool
+     */
+    public function actionContact() : bool
     {
         $userEmail = '';
         $userText = '';
@@ -42,6 +32,8 @@ class SiteController
         if (isset($_POST['submit'])) {
             $userEmail = $_POST['userEmail'];
             $userText = $_POST['userText'];
+            $subject = 'Обратная связь';
+            $message = 'Текст: ' . $userText . '<br> От ' . $userEmail;
 
             $errors = false;
             if (!User::checkEmail($userEmail)) {
@@ -49,22 +41,7 @@ class SiteController
             }
 
             if ($errors === false) {
-                $adminEmail = 'womxez09hez2@mail.ru';
-                $message = "Текст: {$userText}<br>От {$userEmail}";
-                $subject = 'Тема письма';
-
-                $transport = (new Swift_SmtpTransport('smtp.gmail.com', 465, 'ssl'))
-                    ->setUsername('fromyeticave@gmail.com')
-                    ->setPassword('!@Qw123456789');
-
-                $mailer = new Swift_Mailer($transport);
-
-                $message = (new Swift_Message($subject))
-                    ->setFrom(['fromyeticave@gmail.com' => 'E-Shopper'])
-                    ->setTo([$adminEmail])
-                    ->setBody($message, 'text/html');
-
-                $result = $mailer->send($message);
+                $result = Email::sendMail($subject, $message);
 //                var_dump($result); // успех: int 1  не успех: int 0
             }
         }

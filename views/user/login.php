@@ -7,7 +7,7 @@
                     <?php if (isset($errors) && is_array($errors)):?>
                         <ul>
                             <?php foreach ($errors as $error):?>
-                                <li> - <?= $error;?>
+                                <li> - <?php echo $error;?>
                             <?php endforeach;?>
                         </ul>
                     <?php endif;?>
@@ -20,7 +20,6 @@
                             <input type="submit" name="submit" class="btn btn-default" value="Вход">
                         </form>
                     </div><!--/sign in form-->
-
 
                     <br/>
                     <br/>
